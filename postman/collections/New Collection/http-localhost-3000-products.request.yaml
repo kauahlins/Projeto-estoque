@@ -1,0 +1,25 @@
+$kind: http-request
+name: http://localhost:3000/products
+description: ""
+url: http://localhost:3000/products
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"camisa\",\r
+
+    \    \"category\": \"esportiva\",\r
+
+    \    \"price\": 50,\r
+
+    \    \"avalible\": true\r
+
+    \r
+
+    \r
+
+    \r
+
+    }"
+order: 1787610422352

@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model products {
+  product_id Int      @default(autoincrement()) @db.UnsignedInt
+  name       String   @db.VarChar(100)
+  category   String   @db.VarChar(100)
+  price      Decimal  @db.Decimal(10, 0)
+  available  Boolean
+  user_id    Int      @db.UnsignedInt
+
+  users users @relation(fields: [user_id], references: [user_id], onDelete: Cascade, map: "products_users_FK")
+
+  @@id([product_id, user_id])
+  @@index([user_id], map: "products_users_FK")
+}
+
+model users {
+  user_id      Int        @id @default(autoincrement()) @db.UnsignedInt
+  first_name   String?    @db.VarChar(200)
+  email        String     @unique(map: "users_email_unique") @db.VarChar(200)
+  password_hash String    @unique(map: "users_password_unique") @db.VarChar(200)
+  products     products[]
+}
