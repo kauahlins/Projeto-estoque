@@ -96,8 +96,22 @@ function Sessaoestoque() {
       console.error("erro no fetch", erro);
       alert("erro no fetch:" + erro.message)
     }
-
   }
+
+  async function deletarProduto(id) {
+    const resposta = await fetch(`http://localhost:3000/products/${id}/2`, {
+      method: "DELETE",
+    })
+
+    if (resposta.ok) {
+      setProdutos(produtos => produtos.filter(produto => produto.product_id !== id)
+      )
+      alert("produto foi excluido")
+    } else {
+      alert("produto não foi excluido")
+    }
+  }
+
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -259,7 +273,7 @@ function Sessaoestoque() {
                 key={produto.product_id}
                 className="
                 grid
-                grid-cols-5
+                grid-cols-6
                 gap-4
                 px-6
                 py-4
@@ -287,6 +301,13 @@ function Sessaoestoque() {
                 <p className="text-gray-500">
                   {produto.available ? "Disponível" : "Indisponível"}
                 </p>
+
+                <div className="flex gap-2" >
+                  <button className="bg-red-500 text-white px-3 py-1 rounded" onClick={() => deletarProduto(produto.product_id)} >
+                    Excluir
+                  </button>
+
+                </div>
 
               </div>
 

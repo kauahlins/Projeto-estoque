@@ -46,7 +46,6 @@ export async function Updateproduct(req, res) {
 
 export async function Deleteproduct(req, res) {
     const { id, user_Id } = req.params;
-    const { name, category, price, available } = req.body
 
     const product = await prisma.products.delete({
         where: {
@@ -54,7 +53,6 @@ export async function Deleteproduct(req, res) {
                 product_id: Number(id),
                 user_id: Number(user_Id)
             }
-
         }
     });
     return res.status(204).send();
