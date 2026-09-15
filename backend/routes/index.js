@@ -17,6 +17,6 @@ routes.put("/products/:id/:user_Id", Updateproduct)
 
 routes.delete("/products/:id/:user_Id", Deleteproduct)
 
-routes.patch("/product/:id/user_Id", Patchproduct)
+routes.patch("/products/:id/:user_Id", Patchproduct)
 
 export { routes };

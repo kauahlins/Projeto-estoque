@@ -47,14 +47,17 @@ export async function Updateproduct(req, res) {
 export async function Deleteproduct(req, res) {
     const { id, user_Id } = req.params;
 
-    const product = await prisma.products.delete({
+    const result = await prisma.products.deleteMany({
         where: {
-            product_id_user_id: {
-                product_id: Number(id),
-                user_id: Number(user_Id)
-            }
+            product_id: Number(id),
+            user_id: Number(user_Id)
         }
     });
+    if (result.count === 0) {
+        return res.status(404).json({
+            message: "Produto não encontrado"
+        });
+    }
     return res.status(204).send();
 }
 
@@ -69,14 +72,27 @@ export async function Patchproduct(req, res) {
     if (price !== undefined) data.price = price;
     if (available !== undefined) data.available = available;
 
-    const product = await prisma.products.update({
+    const result = await prisma.products.updateMany({
         where: {
-            product_id_user_id: {
-                product_id: Number(id),
-                user_id: Number(user_Id)
-            }
+
+            product_id: Number(id),
+            user_id: Number(user_Id)
+
         },
         data
     });
-    return res.status(200).json(product)
+
+    if (result.count === 0) {
+        return res.status(404).json({
+            message: "produto não encontrado"
+        })
+    }
+
+    const produtoAtualizado = await prisma.products.findFirst({
+        where: {
+            product_id: Number(id),
+            user_id: Number(user_Id)
+        }
+    })
+    return res.status(200).json(produtoAtualizado)
 }

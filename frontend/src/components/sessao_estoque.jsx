@@ -8,6 +8,7 @@ function Sessaoestoque() {
   const [preco, setPreco] = useState("")
   const [available, setAvailable] = useState(true)
   const [produtos, setProdutos] = useState([])
+  const [produtoEditando, setProdutoEditando] = useState(null)
 
   useEffect(() => {
     async function carregarProdutos() {
@@ -98,8 +99,39 @@ function Sessaoestoque() {
     }
   }
 
-  async function deletarProduto(id) {
-    const resposta = await fetch(`http://localhost:3000/products/${id}/2`, {
+  async function editarProduto(id, user_id) {
+    const resposta = await fetch(`http://localhost:3000/products/${id}/${user_id}`, {
+      method: "PATCH",
+      headers: {
+        "content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: produtoEditando.name,
+        category: produtoEditando.category,
+        price: produtoEditando.price,
+        available: produtoEditando.available
+      })
+    }
+    )
+
+    if (resposta.ok) {
+      const produtoAtualizado = await resposta.json()
+
+      setProdutos(produtos => produtos.map(produto => produto.product_id === id
+        ? produtoAtualizado
+        : produto
+      )
+      )
+      setProdutoEditando(null)
+
+      alert("O produto foi editado")
+    } else {
+      alert("o produto não foi editado")
+    }
+  }
+
+  async function deletarProduto(id, user_Id) {
+    const resposta = await fetch(`http://localhost:3000/products/${id}/${user_Id}`, {
       method: "DELETE",
     })
 
@@ -247,7 +279,7 @@ function Sessaoestoque() {
 
         <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
 
-          <div className="grid grid-cols-5 gap-3 bg-gray-50 border-gray-200 px-6 py-4">
+          <div className="grid grid-cols-6 gap-3 bg-gray-50 border-gray-200 px-6 py-4">
             <p className="font-semibold text-gray-600">
               ID
             </p>
@@ -286,24 +318,59 @@ function Sessaoestoque() {
                   {produto.product_id}
                 </p>
 
-                <p className="font-medium text-gray-700">
-                  {produto.name}
-                </p>
+                {produtoEditando?.product_id === produto.product_id ? (
+                  <input autoFocus value={produtoEditando.name} onChange={(e) => setProdutoEditando({ ...produtoEditando, name: e.target.value })} />
+                ) : (
+                  <p className="font-medium text-gray-700" >
+                    {produto.name}
+                  </p>
+                )}
 
-                <p className="text-gray-500">
-                  {produto.category}
-                </p>
+                {produtoEditando?.product_id === produto.product_id ? (
+                  <input value={produtoEditando.category} onChange={(e) => setProdutoEditando({ ...produtoEditando, category: e.target.value })} >
+                  </input>
+                ) : (
+                  <p className="text-gray-500">
+                    {produto.category}
+                  </p>
+                )}
 
-                <p className="text-gray-500" >
-                  R${Number(produto.price).toFixed(2)}
-                </p>
 
-                <p className="text-gray-500">
-                  {produto.available ? "Disponível" : "Indisponível"}
-                </p>
+                {produtoEditando?.product_id === produto.product_id ? (
+                  <input type="number" step="0.1" value={produtoEditando.price} onChange={(e) => setProdutoEditando({ ...produtoEditando, price: e.target.value })} >
+                  </input>
+                ) : (
+                  <p className="text-gray-500" >
+                    R${Number(produto.price).toFixed(2)}
+                  </p>
+                )}
+
+                {produtoEditando?.product_id === produto.product_id ? (
+                  <select value={produtoEditando.available} onChange={(e) => setProdutoEditando({ ...produtoEditando, available: e.target.value === "true" })} >
+                    <option value="true">Disponível</option>
+                    <option value="false">Indisponível</option>
+                  </select>
+                ) : (
+
+                  <p className="text-gray-500">
+                    {produto.available ? "Disponível" : "Indisponível"}
+                  </p>
+                )}
 
                 <div className="flex gap-2" >
-                  <button className="bg-red-500 text-white px-3 py-1 rounded" onClick={() => deletarProduto(produto.product_id)} >
+
+                  {produtoEditando?.product_id === produto.product_id ? (
+                    <button className="bg-green-400 text-white px-3 py-1 rounded-xl font-semilbold shadow-sm" onClick={() => editarProduto(produto.product_id, produto.user_id)} >
+                      Salvar
+                    </button>
+                  ) : (
+                    <button className="bg-blue-500 text-white px-3 py-1 rounded-xl font-semilbold shadow-sm"
+                      onClick={() => setProdutoEditando({ ...produto })}>
+                      Editar
+                    </button>
+                  )}
+
+                  <button className="bg-red-500 text-white px-3 py-1 rounded-xl font-semilbold shadow-sm" onClick={() => deletarProduto(produto.product_id, produto.user_id)} >
                     Excluir
                   </button>
 
