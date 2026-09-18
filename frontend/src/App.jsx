@@ -7,7 +7,7 @@ import Sessaoestoque from "./components/sessao_estoque";
 function App() {
   return (
     <BrowserRouter>
-      <div className=" bg-gray-100 min-h-screen">
+      <div className=" bg-slate-100 min-h-screen">
         <Routes>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/cadastro" element={<Cadastro />}></Route>

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { getProducts, createProduct, Updateproduct, Deleteproduct, Patchproduct } from '../controllers/Productcontroller.js';
+import { cadastrarUsuario } from '../controllers/Usercontroller.js';
 
 const routes = Router();
 
@@ -18,5 +19,7 @@ routes.put("/products/:id/:user_Id", Updateproduct)
 routes.delete("/products/:id/:user_Id", Deleteproduct)
 
 routes.patch("/products/:id/:user_Id", Patchproduct)
+
+routes.post("/users",cadastrarUsuario)
 
 export { routes };
