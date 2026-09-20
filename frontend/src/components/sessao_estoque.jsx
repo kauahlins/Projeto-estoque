@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 function Sessaoestoque() {
 
+  const user_id = sessionStorage.getItem("user_id")
 
   const [produto, setProduto] = useState("")
   const [categoria, setCategoria] = useState("")
@@ -12,7 +13,7 @@ function Sessaoestoque() {
 
   useEffect(() => {
     async function carregarProdutos() {
-      const resposta = await fetch("http://localhost:3000/products");
+      const resposta = await fetch(`http://localhost:3000/products/${user_id}`);
 
       const dados = await resposta.json();
 
@@ -37,7 +38,6 @@ function Sessaoestoque() {
       return;
     }
 
-
     try {
       const resposta = await fetch("http://localhost:3000/products", {
         method: "POST",
@@ -49,7 +49,7 @@ function Sessaoestoque() {
           category: categoria,
           price: Number(preco),
           available: available,
-          user_id: 2
+          user_id: Number(user_id)
         })
 
       });
@@ -74,10 +74,10 @@ function Sessaoestoque() {
       console.log("4 - produto salvo", produtoSalvo)
 
       const novoProduto = {
-        id: produtoSalvo.product_id,
-        nome: produtoSalvo.name,
-        categoria: produtoSalvo.category,
-        preco: produtoSalvo.price,
+        product_id: produtoSalvo.product_id,
+        name: produtoSalvo.name,
+        category: produtoSalvo.category,
+        price: produtoSalvo.price,
         available: produtoSalvo.available
       };
 
@@ -99,7 +99,7 @@ function Sessaoestoque() {
     }
   }
 
-  async function editarProduto(id, user_id) {
+  async function editarProduto(id) {
     const resposta = await fetch(`http://localhost:3000/products/${id}/${user_id}`, {
       method: "PATCH",
       headers: {
@@ -130,8 +130,8 @@ function Sessaoestoque() {
     }
   }
 
-  async function deletarProduto(id, user_Id) {
-    const resposta = await fetch(`http://localhost:3000/products/${id}/${user_Id}`, {
+  async function deletarProduto(id) {
+    const resposta = await fetch(`http://localhost:3000/products/${id}/${user_id}`, {
       method: "DELETE",
     })
 

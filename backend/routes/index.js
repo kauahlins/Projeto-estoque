@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getProducts, createProduct, Updateproduct, Deleteproduct, Patchproduct } from '../controllers/Productcontroller.js';
-import { cadastrarUsuario } from '../controllers/Usercontroller.js';
+import { cadastrarUsuario, LoginUsuario } from '../controllers/Usercontroller.js';
 
 const routes = Router();
 
@@ -10,7 +10,7 @@ routes.get("/login", (req, res) => {
     });
 });
 
-routes.get("/products", getProducts);
+routes.get("/products/:user_id", getProducts);
 
 routes.post("/products", createProduct);
 
@@ -21,5 +21,7 @@ routes.delete("/products/:id/:user_Id", Deleteproduct)
 routes.patch("/products/:id/:user_Id", Patchproduct)
 
 routes.post("/users",cadastrarUsuario)
+
+routes.post("/login", LoginUsuario)
 
 export { routes };

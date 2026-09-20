@@ -2,7 +2,13 @@
 import { prisma } from "../prisma/lib/prisma.js";
 
 export async function getProducts(req, res) {
-    const products = await prisma.products.findMany();
+    const { user_id } = req.params
+
+    const products = await prisma.products.findMany({
+        where: {
+            user_id: Number(user_id)
+        }
+    })
 
     return res.status(200).json(products);
 }
