@@ -29,7 +29,6 @@ function Login() {
             sessionStorage.setItem("user_id",
                 dados.user_id
             )
-
             alert("voce esta logado")
             navigate("/estoque")
         } else {

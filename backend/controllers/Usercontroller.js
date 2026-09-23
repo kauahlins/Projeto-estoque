@@ -1,12 +1,15 @@
 import { prisma } from "../prisma/lib/prisma.js"
+import bcrypt from "bcrypt"
 
 export async function cadastrarUsuario(req, res) {
     const { email, senha } = req.body
 
+    const senhaHash = await bcrypt.hash(senha, 10)
+
     const usuario = await prisma.users.create({
         data: {
             email: email,
-            password_hash: senha
+            password_hash: senhaHash
         }
     })
 
@@ -14,9 +17,8 @@ export async function cadastrarUsuario(req, res) {
 
 }
 
-
 export async function LoginUsuario(req, res) {
-    const {email, senha} = req.body
+    const { email, senha } = req.body
 
     const usuario = await prisma.users.findUnique({
         where: {
@@ -29,7 +31,9 @@ export async function LoginUsuario(req, res) {
         })
     }
 
-    if (usuario.password_hash !== senha) {
+    const senhaCorreta = await bcrypt.compare(senha, usuario.password_hash)
+
+    if (!senhaCorreta) {
         return res.status(401).json({
             mensagem: "email ou senha inválidos"
         })
@@ -37,5 +41,4 @@ export async function LoginUsuario(req, res) {
     return res.status(200).json({
         user_id: usuario.user_id
     })
-
 }
